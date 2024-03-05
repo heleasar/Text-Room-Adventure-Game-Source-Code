@@ -1,0 +1,58 @@
+#include <iostream>
+#include <string>
+#include <map>
+
+using namespace std;
+
+// Define a struct for a room
+struct Room {
+    string description;
+    map<string, Room*> exits;
+};
+
+// Function to create a new room
+Room* createRoom(string description) {
+    Room* room = new Room;
+    room->description = description;
+    return room;
+}
+
+// Function to connect two rooms with a one-way exit
+void connect(Room* room1, Room* room2, string direction) {
+    room1->exits[direction] = room2;
+}
+
+// Function to play the game
+void playGame() {
+    // Create rooms
+    Room* room1 = createRoom("You are in a small room.");
+    Room* room2 = createRoom("You are in a dark hallway.");
+    Room* room3 = createRoom("You are in a large chamber.");
+
+    // Connect rooms
+    connect(room1, room2, "east");
+    connect(room2, room3, "north");
+    connect(room3, room2, "south");
+
+    // Game loop
+    Room* currentRoom = room1;
+    string input;
+    while (true) {
+        cout << currentRoom->description << endl;
+        cout << "Where do you want to go? ";
+        cin >> input;
+
+        // Check if the input matches any exit
+        if (currentRoom->exits.find(input) != currentRoom->exits.end()) {
+            currentRoom = currentRoom->exits[input];
+        } else {
+            cout << "You can't go that way." << endl;
+        }
+    }
+}
+
+int main() {
+    cout << "Welcome to the Text Adventure Game!" << endl;
+    playGame();
+    return 0;
+}
